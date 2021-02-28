@@ -6,11 +6,11 @@ distribute_work is able to work on a defined range of commits, to use the script
 
 Usage:
 ```bash
-./distribute_work [SHA1] [SHA2] [starting hour] [seconds to distribute]
+./distribute_work.sh [SHA1] [SHA2] [starting hour] [seconds to distribute]
 ```
 
 For example:
 ```bash
-./distribute_work 1e17200de5 dab17a71ee 20:00 3600
+./distribute_work.sh 1e17200de5 dab17a71ee 20:00 3600
 ```
 Will distribute 3600 seconds (1 hour) over the range of commits (staring from top 1e17200de5, ending on the bottom dab17a71ee, inclusively) starting from 20:00.
