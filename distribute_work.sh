@@ -446,74 +446,11 @@ calculateDate() #getting the current date not the date of the commit...
   declare -r commitHourNew=("$(calculateNewHour "$commitHour" "$shareInPercent" "$duration_in_seconds")")
   IFS=" " read -a commitHourNewDecomposed <<< $commitHourNew
 
-
-
-
-
-  echo "TESTING"${commitHourNewDecomposed[@]}
-  echo "HOUR"${commitHourNewDecomposed[0]}
-  echo "SECONDS"${commitHourNewDecomposed[2]}
-
-  #[[left]]
-
-  declare -a dateDecomposed
-
-  # Decompose the columns (parts) of the date and assign as entries of an array
-  dateDecomposed=($commitDate)
-
-  #dateDecomposed[3]+=1;
-  echo "Decomposed date is: "${dateDecomposed[@]}""
-
-  # Just assign three variables from this array...
-  declare -a hourDecomposed
-  IFS=":" read -a hourDecomposed <<< ${dateDecomposed[3]} #here string
-  echo "Decomposed hour is         : "${hourDecomposed[@]}""
-
-  declare -a startingHourDecomposed
-  IFS=":" read -a startingHourDecomposed <<< $staring_hour #here string
-  echo "Decomposed starting hour is: "${startingHourDecomposed[@]}""
-
-
-
-
-  #TODO: Will overflow in case of calling date.sh with 18:50 or better yet 19:00 - 16 min (max) - 10 (the constant)
-  let "startingHourDecomposed[1]+=$RANDOM/1000%17+10" #+10 to get double-digit, thats just dumb, but it works...
-  echo "New decomposed starting hour is   : "${startingHourDecomposed[@]}""
-
-  #For first commit just put the value - for the next ones = calculate the distibution...
-
-  #Calculate the interval to seconds and distribute over the commits...
-  #Calculate the new decomposed hour #TODO: Calculate the exact value...
-  let "hourDecomposed[0]=startingHourDecomposed[0]"
-  let "hourDecomposed[1]=startingHourDecomposed[1]"
-  #let "hourDecomposed[2]" let the second be for now...
-  echo "New decomposed hour is   : "${hourDecomposed[@]}""
-
-  echo "DATE HERE    :"$commitDate
-  #INVOKE AWK HERE AND SUBSTITUTE THE HOUR...
-  #For some reason the following works:
   #  var="Sun Feb 14 14:01:04 2021 +0100"
   #  echo $var | awk '{gsub($4, "15:01:04"); print}' - BEGIN in awk was the problem...
   newDate=$(echo $commitDate |
     awk -v hour="${commitHourNewDecomposed[0]}" -v minutes="${commitHourNewDecomposed[1]}" -v seconds="${commitHourNewDecomposed[2]}" '
       {gsub($4, hour":"minutes":"seconds); print}')
-
-  echo "NEW DATE HERE:""$newDate"
-
-  #Need to add the date incrementally...
-  #dateDecomposed
-  #newDate
-  #NEDD TO MAKE CALULATIONS OF duration_in_seconds to distribute the workload...
-  #Duration in seconds /60 and /60 to get the values of minutes and seconds times the share of weight..
-  echo "WEIGHTS:     "${weights[$1]}
-  answer=$(bc <<< "100 * ${weights[$1]} / $accumulatedWeights * $duration_in_seconds")
-  if [[ $answer -eq 0 ]]; then
-    let random_factor=$RANDOM/1000+10 #+10 to not get zero again...
-    answer=$random_factor #42 xD
-  fi
-  #TODO: Logic fo very small numbers - add a random factor...
-  #answer=$(bc <<< "100*$accum")
-  echo $answer
 
   #add date to the map #TODO: Needs calculations of the new date!!!
   dates[$1]=$commitDate
@@ -521,7 +458,8 @@ calculateDate() #getting the current date not the date of the commit...
   newDates[$1]=$newDate
 
   #debug
-  echo "The [date of the commit is] THE CURRENT DATE IS: ""${dates["$1"]}"
+  trace_echo "The date of the commit is :""${dates["$1"]}"
+  trace_echo "The modified date of the commit is :""${newDates["$1"]}"
 }
 
 #pass date as $1
@@ -535,11 +473,6 @@ modifyDate()
   echo $hour
 }
 
-#pass hour as a $1 parameter
-modifyHour()
-{
-   echo "Modifying hour..."
-}
 
 #passed is the timeframe offset set by the user
 normalizeWeights() # or make it a normalize weight for one commit?
@@ -570,7 +503,7 @@ normalizeWeights() # or make it a normalize weight for one commit?
      echo ${normalizedWeights[$i]}
    done
    accum=$accumulatedWeights
-
 }
 
+# Starting the script
 main "$@"
