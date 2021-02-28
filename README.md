@@ -11,6 +11,6 @@ Usage:
 
 For example:
 ```bash
-./distribute_work 1e17200de52e03f47f99bfe8e358f102ad593eba dab17a71eef29c6091d660c80eb03ef0a510db3f 20:00 3600
+./distribute_work 1e17200de5 dab17a71ee 20:00 3600
 ```
-Will distribute 3600 seconds (1 hour) over the range of commits (staring from top 1e17200de52e, ending on the bottom dab17a71eef2, inclusively) starting from 20:00.
+Will distribute 3600 seconds (1 hour) over the range of commits (staring from top 1e17200de5, ending on the bottom dab17a71ee, inclusively) starting from 20:00.
