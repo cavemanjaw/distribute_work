@@ -261,12 +261,6 @@ git_changeDates()
 }
 
 
-functionCallPreamble()
-{
-  echo "Calling" ${FUNCNAME[1]}"()" "from" ${FUNCNAME[2]}"()" "contained in script" $0 >&2
-}
-
-
 # TODO: Have a global option of redirect the logging output somewhere...
 # Params: $1 being SHA of commit
 getCommitDate()
@@ -502,6 +496,12 @@ trace_echo()
     echo -n ${FUNCNAME[$i]}"()->" >&2
   done
   echo $@ >&2
+}
+
+
+functionCallPreamble()
+{
+  echo "Calling" ${FUNCNAME[1]}"()" "from" ${FUNCNAME[2]}"()" "contained in script" $0 >&2
 }
 
 
