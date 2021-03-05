@@ -267,7 +267,7 @@ functionCallPreamble()
 }
 
 # TODO: Local echo for debugging... - more like command substitution for debug
-# print the function like bar()->foo(): "and the echo here..."
+# print the function like bar()->foo():
 trace_echo()
 {
   local numOfFunctionsOnStack=${#FUNCNAME[*]}
