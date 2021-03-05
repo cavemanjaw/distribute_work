@@ -266,18 +266,6 @@ functionCallPreamble()
   echo "Calling" ${FUNCNAME[1]}"()" "from" ${FUNCNAME[2]}"()" "contained in script" $0 >&2
 }
 
-# TODO: Local echo for debugging... - more like command substitution for debug
-# print the function like bar()->foo():
-trace_echo()
-{
-  local numOfFunctionsOnStack=${#FUNCNAME[*]}
-  echo $numOfFunctionsOnStack >&2 # Need to print somewhere else than the stdout
-  for (( i=$(($numOfFunctionsOnStack-1)); (( $i > 0 )) ; i-- )); do
-    echo -n ${FUNCNAME[$i]}"()->" >&2
-  done
-  echo $@ >&2
-}
-
 
 # TODO: Have a global option of redirect the logging output somewhere...
 # Params: $1 being SHA of commit
@@ -504,6 +492,18 @@ normalizeWeights() # or make it a normalize weight for one commit?
    done
    accum=$accumulatedWeights
 }
+
+
+trace_echo()
+{
+  local numOfFunctionsOnStack=${#FUNCNAME[*]}
+  echo $numOfFunctionsOnStack >&2 # Need to print somewhere else than the stdout
+  for (( i=$(($numOfFunctionsOnStack-1)); (( $i > 0 )) ; i-- )); do
+    echo -n ${FUNCNAME[$i]}"()->" >&2
+  done
+  echo $@ >&2
+}
+
 
 # Starting the script
 main "$@"
