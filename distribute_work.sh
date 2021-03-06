@@ -29,7 +29,9 @@ help()
 # Params: $1 being SHA of top commit, $2 is SHA of bottom commit
 main()
 {
-  #Reading parameters
+  functionCallPreamble
+
+  #Reading the input parameters
   declare -r sha1=$1
   declare -r sha2=$2
   declare -r staring_hour=$3
@@ -37,6 +39,7 @@ main()
 
   #The map for holding SHA and weight pair
   declare -A weights
+
   #Holding the old dates...
   declare -A dates
 
@@ -46,14 +49,11 @@ main()
   declare -A normalizedWeights
   declare -A normalizedHourOffsets
 
-  declare -i accum
-
-  #The array of SHAs in the range of requested commits (first index is the parent of the first commit that is processed)
+  # The array of SHAs in the range of requested commits (first index is the parent of the first commit that is processed)
   declare -a shas
 
-  # Put the arguments (all the arrays and so on) in here - call it with main "$@"
   echo "Main function called..."
-  #Check the range of commits to be processed
+  # Check the range of commits to be processed
   git_commitRange "$sha1" "$sha2"
 
   #Firstly, extract the commits to be processed
@@ -95,10 +95,11 @@ decomposeStartingHour()
 {
   declare -a startingHourDecomposed
   IFS=":" read -a startingHourDecomposed <<< $staring_hour
-  echo "Decomposed starting hour is       : "${startingHourDecomposed[@]}""
+  echo "Decomposed starting hour is: "${startingHourDecomposed[@]}""
 }
 
-#checks the number of commits given by SHA range
+
+# Checks the number of commits given by SHA range
 git_commitRange()
 {
   functionCallPreamble
@@ -113,7 +114,8 @@ git_commitRange()
   trace_echo $number_of_commits
 }
 
-#checks the number of lines added in between commits given by SHA arguments, third argument is a
+
+# Checks the number of lines added in between commits given by SHA arguments, third argument is a
 git_checkLines()
 {
   functionCallPreamble
@@ -169,7 +171,7 @@ git_storeShas()
 }
 
 
-#for example supported format ISO 8601 2005-04-07T22:13:13
+# For example supported format ISO 8601 2005-04-07T22:13:13
 # Params: $1 being SHA of commit
 git_changeDates()
 {
@@ -238,6 +240,7 @@ getCurrentDate()
   # "Sun Feb 14 14:01:04 2021 +0100"
   echo $currentDate
 }
+
 
 # TODO: Pass an array to function - how to refer to the arguments then in a function?
 # Params: $1 the date in getCurrentDate() or getCommitDate() returning format
@@ -348,7 +351,8 @@ calculateNewHour()
 #need to call it with $1 equal to commit SHA
 calculateDate() #getting the current date not the date of the commit...
 {
-  # currentDate is the current date - do we need that
+  functionCallPreamble
+  # currentDate is the current date - do we need that?
   currentDate="$(getCurrentDate)"
   echo $currentDate
 
@@ -381,6 +385,7 @@ calculateDate() #getting the current date not the date of the commit...
   trace_echo "The modified date of the commit is :""${newDates["$1"]}"
 }
 
+
 #pass date as $1
 modifyDate()
 {
@@ -396,10 +401,10 @@ modifyDate()
 #passed is the timeframe offset set by the user
 normalizeWeights() # or make it a normalize weight for one commit?
 {
-   echo "jou"
-   #search for the highest and the lowest and spread it across the given time-window
-   #accumulate weights across
-   #weights
+   functionCallPreamble
+
+   # Search for the highest and the lowest and spread it across the given time-window
+   # Accumulate weights across all weights
    for i in "${!weights[@]}"
    do
       let "accumulatedWeights+=${weights[$i]}"
@@ -407,7 +412,7 @@ normalizeWeights() # or make it a normalize weight for one commit?
    done
 
    #debug
-   echo "The final results for weight accululation is: "$accumulatedWeights
+   trace_echo "The final results for weight accululation is: "$accumulatedWeights
 
    #Print the share of every commit in the total workload #TODO: Add it into the -A map of normalized weights?
    for i in "${!weights[@]}"
@@ -421,7 +426,6 @@ normalizeWeights() # or make it a normalize weight for one commit?
      normalizedWeights[$i]=$normalizedWeight
      echo ${normalizedWeights[$i]}
    done
-   accum=$accumulatedWeights
 }
 
 
