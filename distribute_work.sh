@@ -1,75 +1,12 @@
 #!/bin/bash
-# assert.sh
-#take the number of commits as parameter or take base SHA as a parameter
-#generate random seeds and time offsets from the specified or current data - git diff and wc -l to see how big should be the offsets? - different offsets for added in comparison to deleted lines? weights assigning mechanism?
-#normalize the weight over some hours
-#search for the commits git filter branch and change the dates randomly
+
 #TODO: Make debug flag that could enable specific logs (like --debug flag)
 #https://stackoverflow.com/questions/5972491/how-to-enable-or-disable-multiple-echo-statements-in-bash-ecript
 
-#Currently supporting only one commit (?)
-
-#getopts for parameters
+#TODO: getopts for parameters
 #TODO: Difference between author date and commiter date?
-#TODO: Exit in case of lack of arguments (or pront help and exit)
+#TODO: Exit in case of lack of arguments (or print help and exit)
 #TODO: Restrict the arguments to be SHA or SHA convertible ("HEAD", tag, branch and so on)
-#TODO: Mark local variables in functions with 'local'
-#TODO: Parameters ca be passed to function foo() with a call 'foo "$arg"' or 'foo arg'
-
-# API design:
-# MVP version:     // Two last arguments are - starting hour and the duration (in seconds?)
-# ./date SHA1 SHA2 18:00 360
-# distribute the work over the hours...
-# Need to distribute muliple commits over the hours
-
-#                   TOP COMMIT (newer one)                  BOTTOM COMMIT (the older one)
-# ./date.sh 1e17200de52e03f47f99bfe8e358f102ad593eba dab17a71eef29c6091d660c80eb03ef0a510db3f
-# ./date.sh e9888fe52a7056abae4eb30c862fc04893f03a38 ae0bd2f096ab2d14f5bf982dd7433fc57c7ee081
-
-# More recent use cases:
-# ./date.sh 1e17200de52e03f47f99bfe8e358f102ad593eba dab17a71eef29c6091d660c80eb03ef0a510db3f 20:00 3600
-# ./date.sh 1e17200de52e03f47f99bfe8e358f102ad593eba dab17a71eef29c6091d660c80eb03ef0a510db3f 20:00 3600 2>/dev/null
-
-
-: '
-
-kamil@kamil-TP300LA:~/experimental$ ./date.sh 1e17200de52e03f47f99bfe8e358f102ad593eba dab17a71eef29c6091d660c80eb03ef0a510db3f
-
-#here - to the git log command the order of commits does not matter...
-kamil@kamil-TP300LA:~/experimental$ git log --oneline dab17a71eef29c6091d660c80eb03ef0a510db3f...1e17200de52e03f47f99bfe8e358f102ad593eba
-1e17200 Making overflow_calculator.cpp compile
-853212c Renaming sin, adding precoding and Barnsley plot
-196c56d Adding ready #define_inside_macro
-1f48006 Adding empty #define_inside_macro.cpp
-dab17a7 (parent one)
-'
-
-: '
-for i in "$@"
-do
-case $i in
-    -e=*|--extension=*)
-    EXTENSION="${i#*=}"
-    shift # past argument=value
-    ;;
-    -s=*|--searchpath=*)
-    SEARCHPATH="${i#*=}"
-    shift # past argument=value
-    ;;
-    -l=*|--lib=*)
-    LIBPATH="${i#*=}"
-    shift # past argument=value
-    ;;
-    --default)
-    DEFAULT=YES
-    shift # past argument with no value
-    ;;
-    *)
-          # unknown option
-    ;;
-esac
-done
-'
 
 #print the usage of this script
 help()
