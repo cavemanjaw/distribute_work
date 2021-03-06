@@ -11,7 +11,7 @@
 #print the usage of this script
 help()
 {
-   echo "Usage: date [SHA1] [SHA2]"
+   echo "Usage: ./distribute_work.sh [SHA1] [SHA2] [starting hour] [seconds to distribute]"
 }
 
 ##if there is a lack of exactly two arguments that have been passed to the script
